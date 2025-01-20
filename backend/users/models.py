@@ -16,6 +16,9 @@ class User(AbstractUser):
         verbose_name='Имя пользователя',
         max_length=150,
         unique=True,
+        validators=[
+            RegexValidator(regex=r'^[\w.@+-]+\Z')
+        ],
     )
     first_name = models.CharField(
         verbose_name='Имя',
@@ -41,3 +44,31 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class Subscription(models.Model):
+
+    author = models.ForeignKey(
+        User,
+        related_name='Subscription',
+        on_delete=models.CASCADE,
+        verbose_name='Автор рецепта',
+    )
+    subscriber = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscriber',
+        verbose_name='Подписчик'
+    )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=['subscriber', 'author'], name='unique_subscription'
+        #     )
+        # ]
+
+    def __str__(self):
+        return f'{self.subscriber} {self.author}'
