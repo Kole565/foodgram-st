@@ -16,6 +16,7 @@ class User(AbstractUser):
         verbose_name='Имя пользователя',
         max_length=150,
         unique=True,
+        db_index=True,
         validators=[
             RegexValidator(regex=r'^[\w.@+-]+\Z')
         ],
@@ -50,7 +51,7 @@ class Subscription(models.Model):
 
     author = models.ForeignKey(
         User,
-        related_name='Subscription',
+        related_name='author',
         on_delete=models.CASCADE,
         verbose_name='Автор рецепта',
     )
@@ -64,11 +65,11 @@ class Subscription(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=['subscriber', 'author'], name='unique_subscription'
-        #     )
-        # ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['subscriber', 'author'], name='unique_subscription'
+            )
+        ]
 
     def __str__(self):
         return f'{self.subscriber} {self.author}'

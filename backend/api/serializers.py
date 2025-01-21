@@ -4,12 +4,11 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer
 
-from users.models import User
+from users.models import User, Subscription
 
 
 class CustomImageField(serializers.ImageField):
     def to_internal_value(self, data):
-        # FIXME: This thing don't used
         if isinstance(data, str) and data.startswith('data:image'):
             format, imgstr = data.split(';base64,')
             ext = format.split('/')[-1]
@@ -30,11 +29,11 @@ class CustomUserSerializer(UserCreateSerializer):
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
+
         if user.is_anonymous:
             return False
-        return True  # FIXME: Implement subscriptions
 
-        # return Subscription.objects.filter(user=user, author=obj.id).exists()
+        return Subscription.objects.filter(subscriber=user, author=obj.id).exists()
 
 
 class CustomCreateUserSerializer(CustomUserSerializer):
@@ -49,14 +48,14 @@ class CustomCreateUserSerializer(CustomUserSerializer):
 
 
 class CustomUserAvatarSerializer(serializers.ModelSerializer):
-    """For avatar setting"""
     avatar = CustomImageField(use_url=True)
 
-    def validate_avatar(self, value):
-        if not value:
+    def validate(self, data):
+        avatar = self.initial_data.get("avatar")
+        if not avatar:
             raise serializers.ValidationError("Аватар не может быть пустым")
 
-        return value
+        return data
 
     class Meta:
         model = User

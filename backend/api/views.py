@@ -45,14 +45,25 @@ class CustomUserViewSet(UserViewSet):
     def avatar(self, request, id):
         user = request.user
 
-        serializer = CustomUserAvatarSerializer(
-            user, context={'request': request}
-        )
+        if request.method == "PUT":
+            serializer = CustomUserAvatarSerializer(
+                user, data=request.data, partial=True
+            )
 
-        if request.method == 'PUT':
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
             return Response(serializer.data, status=status.HTTP_200_OK)
-        if request.method == 'DELETE':
-            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        if request.method == "DELETE":
+            if user.avatar:
+                user.avatar.delete()
+                user.avatar = None
+                user.save()
+
+                return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,
@@ -62,7 +73,8 @@ class CustomUserViewSet(UserViewSet):
         url_name='subscriptions',
     )
     def subscriptions(self, request):
-        queryset = User.objects.filter(follow__user=self.request.subscriber)
+        queryset = User.objects.filter(author__subscriber=self.request.user)
+
         if queryset:
             pages = self.paginate_queryset(queryset)
             serializer = SubscriptionSerializer(
@@ -99,16 +111,14 @@ class CustomUserViewSet(UserViewSet):
             )
             subscribe.save()
 
-            serializer = CustomUserSerializer(
-                author, context={'request': request}
+            serializer = SubscriptionSerializer(
+                request.user, context={'request': request}
             )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+            return Response(serializer.data,
+                            status=status.HTTP_201_CREATED)
         if change_subscription_status.exists():
             change_subscription_status.delete()
             return Response(f'Вы отписались от {author}',
                             status=status.HTTP_204_NO_CONTENT)
-        return Response(
-            f'Вы не подписаны на {author}',
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(f'Вы не подписаны на {author}',
+                        status=status.HTTP_400_BAD_REQUEST)
