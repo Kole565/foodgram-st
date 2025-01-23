@@ -8,42 +8,57 @@ from users.models import Subscription, User
 
 class CustomImageField(serializers.ImageField):
     def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr), name='photo.' + ext)
+        if isinstance(data, str) and data.startswith("data:image"):
+            format, imgstr = data.split(";base64,")
+            ext = format.split("/")[-1]
+            data = ContentFile(base64.b64decode(imgstr), name="photo." + ext)
 
         return super().to_internal_value(data)
 
 
 class CustomUserSerializer(UserCreateSerializer):
     """For reading"""
+
     is_subscribed = serializers.SerializerMethodField()
     avatar = CustomImageField(use_url=True)
 
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name',
-                  'is_subscribed', 'avatar')
+        fields = (
+            "email",
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "is_subscribed",
+            "avatar",
+        )
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
+        user = self.context.get("request").user
 
         if user.is_anonymous:
             return False
 
-        return Subscription.objects.filter(subscriber=user, author=obj.id).exists()
+        return Subscription.objects.filter(
+            subscriber=user, author=obj.id
+        ).exists()
 
 
 class CustomCreateUserSerializer(CustomUserSerializer):
     """For creating"""
+
     class Meta:
         model = User
         fields = (
-            'email', 'id', 'username', 'first_name',
-            'last_name', 'password'
+            "email",
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "password",
         )
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {"password": {"write_only": True}}
 
 
 class CustomUserAvatarSerializer(serializers.ModelSerializer):
@@ -58,4 +73,4 @@ class CustomUserAvatarSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('avatar',)
+        fields = ("avatar",)

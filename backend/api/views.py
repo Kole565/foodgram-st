@@ -20,26 +20,26 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=False,
-        methods=('get',),
+        methods=("get",),
         permission_classes=(AllowAny,),
-        url_path='me',
-        url_name='me',
+        url_path="me",
+        url_name="me",
     )
     def me(self, request):
         if request.user.is_anonymous:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         serializer = CustomUserSerializer(
-            request.user, context={'request': request}
+            request.user, context={"request": request}
         )
         return Response(serializer.data)
 
     @action(
         detail=True,
-        methods=('put', 'delete'),
+        methods=("put", "delete"),
         permission_classes=(IsAuthenticated,),
-        url_path='avatar',
-        url_name='avatar',
+        url_path="avatar",
+        url_name="avatar",
     )
     def avatar(self, request, id):
         user = request.user
@@ -66,10 +66,10 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=False,
-        methods=('get',),
-        permission_classes=(IsAuthenticated, ),
-        url_path='subscriptions',
-        url_name='subscriptions',
+        methods=("get",),
+        permission_classes=(IsAuthenticated,),
+        url_path="subscriptions",
+        url_name="subscriptions",
     )
     def subscriptions(self, request):
         queryset = User.objects.filter(author__subscriber=self.request.user)
@@ -77,19 +77,19 @@ class CustomUserViewSet(UserViewSet):
         if queryset:
             pages = self.paginate_queryset(queryset)
             serializer = SubscriptionSerializer(
-                pages, many=True,
-                context={'request': request}
+                pages, many=True, context={"request": request}
             )
             return self.get_paginated_response(serializer.data)
-        return Response('Вы ни на кого не подписаны.',
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            "Вы ни на кого не подписаны.", status=status.HTTP_400_BAD_REQUEST
+        )
 
     @action(
         detail=True,
-        methods=('post', 'delete'),
+        methods=("post", "delete"),
         permission_classes=(IsAuthenticated,),
-        url_path='subscribe',
-        url_name='subscribe',
+        url_path="subscribe",
+        url_name="subscribe",
     )
     def subscribe(self, request, id):
         subscriber = request.user
@@ -97,27 +97,31 @@ class CustomUserViewSet(UserViewSet):
         change_subscription_status = Subscription.objects.filter(
             subscriber=subscriber.id, author=author.id
         )
-        if request.method == 'POST':
+        if request.method == "POST":
             if subscriber == author:
-                return Response('Вы пытаетесь подписаться на себя!!',
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    "Вы пытаетесь подписаться на себя!!",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             if change_subscription_status.exists():
-                return Response(f'Вы теперь подписаны на {author}',
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    f"Вы теперь подписаны на {author}",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             subscribe = Subscription.objects.create(
-                subscriber=subscriber,
-                author=author
+                subscriber=subscriber, author=author
             )
             subscribe.save()
 
             serializer = SubscriptionSerializer(
-                request.user, context={'request': request}
+                request.user, context={"request": request}
             )
-            return Response(serializer.data,
-                            status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         if change_subscription_status.exists():
             change_subscription_status.delete()
-            return Response(f'Вы отписались от {author}',
-                            status=status.HTTP_204_NO_CONTENT)
-        return Response(f'Вы не подписаны на {author}',
-                        status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                f"Вы отписались от {author}", status=status.HTTP_204_NO_CONTENT
+            )
+        return Response(
+            f"Вы не подписаны на {author}", status=status.HTTP_400_BAD_REQUEST
+        )

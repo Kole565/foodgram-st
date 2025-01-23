@@ -5,18 +5,20 @@ from recipes.models import Ingredient, Recipe
 
 
 class IngredientFilter(FilterSet):
-    name = rest_framework.CharFilter(lookup_expr='istartswith')
+    name = rest_framework.CharFilter(lookup_expr="istartswith")
 
     class Meta:
         model = Ingredient
-        fields = ('name', )
+        fields = ("name",)
 
 
 class RecipeFilter(django_filters.FilterSet):
     is_favorited = django_filters.filters.NumberFilter(
-        method='is_recipe_in_favorites_filter')
+        method="is_recipe_in_favorites_filter"
+    )
     is_in_shopping_cart = django_filters.filters.NumberFilter(
-        method='is_recipe_in_shoppingcart_filter')
+        method="is_recipe_in_shoppingcart_filter"
+    )
 
     def is_recipe_in_favorites_filter(self, queryset, name, value):
         if value == 1:
@@ -32,4 +34,4 @@ class RecipeFilter(django_filters.FilterSet):
 
     class Meta:
         model = Recipe
-        fields = ('author', 'is_favorited', 'is_in_shopping_cart')
+        fields = ("author", "is_favorited", "is_in_shopping_cart")

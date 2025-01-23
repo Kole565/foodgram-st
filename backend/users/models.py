@@ -5,42 +5,38 @@ from django.db import models
 
 class User(AbstractUser):
     email = models.EmailField(
-        verbose_name='Электронная почта',
+        verbose_name="Электронная почта",
         unique=True,
-        validators=[
-            RegexValidator(regex=r'^[\w.@+-]+\Z')
-        ],
+        validators=[RegexValidator(regex=r"^[\w.@+-]+\Z")],
     )
     username = models.CharField(
-        verbose_name='Имя пользователя',
+        verbose_name="Имя пользователя",
         max_length=150,
         unique=True,
         db_index=True,
-        validators=[
-            RegexValidator(regex=r'^[\w.@+-]+\Z')
-        ],
+        validators=[RegexValidator(regex=r"^[\w.@+-]+\Z")],
     )
     first_name = models.CharField(
-        verbose_name='Имя',
+        verbose_name="Имя",
         max_length=150,
     )
     last_name = models.CharField(
-        verbose_name='Фамилия',
+        verbose_name="Фамилия",
         max_length=150,
     )
     avatar = models.ImageField(
-        verbose_name='Аватар пользователя',
-        upload_to='users/',
+        verbose_name="Аватар пользователя",
+        upload_to="users/",
         blank=True,
     )
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-        ordering = 'id',
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+        ordering = ("id",)
 
     def __str__(self):
         return self.username
@@ -50,25 +46,25 @@ class Subscription(models.Model):
 
     author = models.ForeignKey(
         User,
-        related_name='author',
+        related_name="author",
         on_delete=models.CASCADE,
-        verbose_name='Автор рецепта',
+        verbose_name="Автор рецепта",
     )
     subscriber = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='subscriber',
-        verbose_name='Подписчик'
+        related_name="subscriber",
+        verbose_name="Подписчик",
     )
 
     class Meta:
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
         constraints = [
             models.UniqueConstraint(
-                fields=['subscriber', 'author'], name='unique_subscription'
+                fields=["subscriber", "author"], name="unique_subscription"
             )
         ]
 
     def __str__(self):
-        return f'{self.subscriber} {self.author}'
+        return f"{self.subscriber} {self.author}"
