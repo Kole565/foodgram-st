@@ -36,8 +36,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
             return RecipeSerializer
-        elif self.action in ("create", "partial_update"):
+        if self.action in ("create", "partial_update"):
             return CreateRecipeSerializer
+
+        return RecipeSerializer
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -58,8 +60,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if Favorite.objects.filter(user=user, recipe=recipe).exists():
                 return Response(
                     {
-                        "errors": f'Повторно - "{recipe.name}" добавить нельзя,'
-                        f"он уже есть в избранном у пользователя"
+                        "errors": 'Повторно - "{}" добавить нельзя,'
+                        "он уже есть в избранном".format(recipe.name)
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
@@ -77,6 +79,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
     @action(
         detail=True,
         methods=("post", "delete"),
@@ -92,8 +96,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
                 return Response(
                     {
-                        "errors": f'Повторно - "{recipe.name}" добавить нельзя,'
-                        f"он уже есть в списке покупок"
+                        "errors": 'Повторно - "{}" добавить нельзя,'
+                        "он уже есть в списке покупок".format(recipe.name)
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
@@ -113,6 +117,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
     def ingredients_to_txt(ingredients):
