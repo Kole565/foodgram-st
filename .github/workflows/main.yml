@@ -56,22 +56,34 @@ jobs:
           - name: Login to Docker 
             uses: docker/login-action@v3
             with:
-              username: ${{ secrets.DOCKER_USERNAME }}
-              password: ${{ secrets.DOCKER_PASSWORD }}
+                username: ${{ secrets.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_PASSWORD }}
 
           - name: Push backend to Docker Hub
             uses: docker/build-push-action@v5
             with:
-              context: ./backend
-              push: true
-              tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
+                context: ./backend
+                push: true
+                tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
               
           - name: Push frontend to Docker Hub
             uses: docker/build-push-action@v5
             with:
-              context: ./frontend
-              push: true
-              tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
+                context: ./frontend
+                push: true
+                tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
+
+    send_message:
+        name: Send success message
+        runs-on: ubuntu-latest
+        needs: build_and_push_to_docker_hub
+        steps:
+            - name: Send message
+              uses: appleboy/telegram-action@master
+              with:
+                to: ${{ secrets.TELEGRAM_TO }}
+                token: ${{ secrets.TELEGRAM_TOKEN }}
+                message: Образы успешно загружены!
 
             # - name: Install Postman CLI
             #   run: |
