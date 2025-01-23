@@ -1,10 +1,9 @@
 import base64
 
 from django.core.files.base import ContentFile
-from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer
-
-from users.models import User, Subscription
+from rest_framework import serializers
+from users.models import Subscription, User
 
 
 class CustomImageField(serializers.ImageField):

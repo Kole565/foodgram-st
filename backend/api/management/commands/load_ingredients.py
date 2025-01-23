@@ -1,10 +1,8 @@
 import csv
 
 from django.core.management.base import BaseCommand
-
 from foodgram.settings import CSV_FILES_DIR
 from recipes.models import Ingredient
-
 
 # python3 manage.py utils - команда для загрузки ингредиентов
 

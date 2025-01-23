@@ -1,10 +1,8 @@
+from api.serializers import CustomImageField, CustomUserSerializer
 from rest_framework import serializers
-from api.serializers import CustomUserSerializer
 
-from .models import (
-    Ingredient, IngredientInRecipe, Recipe, Favorite, ShoppingCart
-)
-from api.serializers import CustomImageField
+from .models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
+                     ShoppingCart)
 
 
 class IngredientSerializer(serializers.ModelSerializer):

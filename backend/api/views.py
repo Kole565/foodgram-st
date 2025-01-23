@@ -1,16 +1,15 @@
-from djoser.views import UserViewSet
 from django.shortcuts import get_object_or_404
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import (
-    AllowAny, IsAuthenticatedOrReadOnly, IsAuthenticated
-)
-from rest_framework.decorators import action
+from djoser.views import UserViewSet
 from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import (AllowAny, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-
-from .serializers import CustomUserSerializer, CustomUserAvatarSerializer
+from users.models import Subscription, User
 from users.serializers import SubscriptionSerializer
-from users.models import User, Subscription
+
+from .serializers import CustomUserAvatarSerializer, CustomUserSerializer
 
 
 class CustomUserViewSet(UserViewSet):
