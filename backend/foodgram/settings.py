@@ -14,6 +14,9 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 DEBUG = bool(int(os.getenv('DEBUG', default='1')))
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1"
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -81,7 +84,6 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT", default=None),
     }
 }
-
 
 AUTH_USER_MODEL = "users.User"
 
