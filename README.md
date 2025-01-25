@@ -48,7 +48,7 @@ python manage.py collectstatic --no-input
 ```
 ### Заполните базу тестовыми данными: 
 ```bash
-python manage.py load_ingredients
+python manage.py loaddata initial_data.json
 ```
 
 - Запуск сервера (если хотите оставить терминал можете добавить ```&``` в конец для фонового процесса):
@@ -106,12 +106,12 @@ docker compose exec backend python manage.py collectstatic --no-input
 ```
 ### Заполните базу тестовыми данными:
 ```bash
-docker compose exec backend python manage.py load_ingredients
+docker compose exec backend python manage.py loaddata initial_data.json
 ```
-Если какой то пункт не работает (требует winpty), попробуйте сначала зайти в контейнер:
+Если какой то пункт не работает (требует winpty), попробуйте сначала зайти в контейнер (на примере загрузки данных):
 ```bash
 docker compose exec backend /bin/bash
-python manage.py load_ingredients
+python manage.py loaddata initial_data.json
 exit
 ```
 

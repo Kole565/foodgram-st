@@ -140,3 +140,6 @@ dmypy.json
 
 static/
 media/
+
+# ruff
+*.ruff_cache
