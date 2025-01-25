@@ -11,7 +11,6 @@ services:
     image: kole565/foodgram_backend:latest
     restart: always
     volumes:
-      - data_value:/app/data/
       - static_value:/app/static/
       - media_value:/app/media/
     depends_on:
@@ -44,4 +43,3 @@ volumes:
   postgres_data:
   static_value:
   media_value:
-  data_value:
