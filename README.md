@@ -72,10 +72,20 @@ python manage.py runserver
 git clone https://github.com/Kole565/foodgram-st.git
 ```
 
+- Создайте файл .env в папке проекта:
+```.env
+DB_ENGINE=django.db.backends.postgresql # указываем, что работаем с postgresql
+DB_NAME=postgres # имя базы данных
+POSTGRES_USER=postgres # логин для подключения к базе данных
+POSTGRES_PASSWORD=postgres # пароль для подключения к БД (установите свой)
+DB_HOST=db # название сервиса (контейнера)
+DB_PORT=5432 # порт для подключения к БД
+DEBUG=0
+```
+
 Выполните команду:
 ```bash
 # foodgram-st
-cd ../infra
 docker compose up -d --build # d - отсоединить от консоли, оставив её доступной, build - пересобирать контейнер при каждом запуске
 ```
 
