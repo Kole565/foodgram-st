@@ -12,9 +12,10 @@
 ## Запуск проекта в dev-режиме (только backend)
 
 - Клонируйте репозиторий с проектом на свой компьютер. В терминале из рабочей директории выполните команду:
+
 ```bash
 git clone https://github.com/Kole565/foodgram-st.git
-cd cd foodgram-st/backend
+cd foodgram-st/backend
 ```
 
 - Установить и активировать виртуальное окружение (для linux, для windows используйте ```./env/Scripts/activate```)
@@ -32,31 +33,36 @@ pip install -r requirements.txt
 ```
 
 ### Выполните миграции:
+
 ```bash
 # foodgram-st/backend
 python manage.py migrate
 ```
 
 - Создание нового суперпользователя 
+
 ```bash
 python manage.py createsuperuser
 ```
 
 ### Загрузите статику:
+
 ```bash
 python manage.py collectstatic --no-input
 ```
 ### Заполните базу тестовыми данными: 
+
 ```bash
 python manage.py loaddata initial_data.json
 ```
 
 - Запуск сервера (если хотите оставить терминал можете добавить ```&``` в конец для фонового процесса):
+
 ```bash
 python manage.py runserver
 ```
 
-Таким образом вы можете активировать backend часть foodgram. Вполне хватает для запуска тестов postman api.
+Таким образом вы можете активировать backend часть foodgram. Этого достаточно для запуска тестов postman api. Используется конфигурация по умолчанию - debug: True, db: sqlite3.
 
 ## Полный запуск проекта
 
@@ -68,11 +74,12 @@ python manage.py runserver
 
 Клонируйте репозиторий с проектом на свой компьютер (если вы этого не сделали в прошлом разделе).
 В терминале из рабочей директории выполните команду:
+
 ```bash
 git clone https://github.com/Kole565/foodgram-st.git
 ```
 
-- Создайте файл .env в папке проекта:
+- Создайте файл .env в папке проекта (или ```mv example.env .env```):
 ```.env
 DB_ENGINE=django.db.backends.postgresql # указываем, что работаем с postgresql
 DB_NAME=postgres # имя базы данных
@@ -83,10 +90,15 @@ DB_PORT=5432 # порт для подключения к БД
 DEBUG=0
 ```
 
-Выполните команду:
+Выполните команду сборки контейнеров:
 ```bash
 # foodgram-st
 docker compose up -d --build # d - отсоединить от консоли, оставив её доступной, build - пересобирать контейнер при каждом запуске
+```
+При последующий обновлениях обновите образ перед сборкой, иначе изменения в конфигурации django не сохранятся:
+```bash
+# foodgram-st
+docker image pull kole565/foodgram_backend
 ```
 
 - В результате должны быть собрано четыре контейнера и три останется активными (контейнер frontend является статическим - служит хранилищем, поэтому не отображается как активный, используйте ```docker container ls -a``` для просмотра всех), при введении следующей команды получаем список запущенных контейнеров:  
@@ -110,13 +122,13 @@ docker compose exec backend python manage.py migrate
 ```bash
 docker compose exec backend python manage.py createsuperuser
 ```
-### Загрузите статику:
-```bash
-docker compose exec backend python manage.py collectstatic --no-input
-```
 ### Заполните базу тестовыми данными:
 ```bash
 docker compose exec backend python manage.py loaddata initial_data.json
+```
+### Загрузите статику:
+```bash
+docker compose exec backend python manage.py collectstatic --no-input
 ```
 Если какой то пункт не работает (требует winpty), попробуйте сначала зайти в контейнер (на примере загрузки данных):
 ```bash
@@ -130,8 +142,8 @@ exit
 | Адрес                 | Описание |
 |:----------------------|:---------|
 | 127.0.0.1            | Главная страница |
-| 127.0.0.1/admin/     | Для входа в панель администратора |
-| 127.0.0.1/api/docs/  | Описание работы API |
+| 127.0.0.1/admin/     | Панель администратора |
+| 127.0.0.1/api/docs/  | Описание требований к API |
 
 ## Пользовательские роли
 | Функционал                                                                                                                | Неавторизованные пользователи |  Авторизованные пользователи | Администратор  |
