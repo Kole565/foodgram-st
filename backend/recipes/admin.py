@@ -13,7 +13,7 @@ class IngredientAdmin(ModelAdmin):
 
 @register(Recipe)
 class RecipeAdmin(ModelAdmin):
-    list_display = ("pk", "name", "author", "get_favorites")
+    list_display = ("pk", "name", "author", "get_favorites", "created")
     list_filter = ("author", "name")
     search_fields = ("name", "author")
 
