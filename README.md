@@ -81,6 +81,7 @@ git clone https://github.com/Kole565/foodgram-st.git
 
 - Создайте файл .env в папке проекта (или ```mv example.env .env```):
 ```.env
+SECRET_KEY="s^yvw6=0^47ja$i!m9d#_0b_o-c9=3b-l5ax7i4x_h2ep1v&s5" # Для примера, используйте свой (get_random_secret_key())
 DB_ENGINE=django.db.backends.postgresql # указываем, что работаем с postgresql
 DB_NAME=postgres # имя базы данных
 POSTGRES_USER=postgres # логин для подключения к базе данных
