@@ -150,6 +150,3 @@ DJOSER = {
         "user_list": ["rest_framework.permissions.AllowAny"],
     },
 }
-
-
-CSV_FILES_DIR = BASE_DIR / "data"
