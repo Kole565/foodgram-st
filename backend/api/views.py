@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import (
-    AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+    IsAuthenticated, IsAuthenticatedOrReadOnly
 )
 from rest_framework.response import Response
 
@@ -22,14 +22,11 @@ class UserProfileViewSet(UserViewSet):
     @action(
         detail=False,
         methods=("get",),
-        permission_classes=(AllowAny,),
+        permission_classes=(IsAuthenticated,),
         url_path="me",
         url_name="me",
     )
     def me(self, request):
-        if request.user.is_anonymous:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
         serializer = CustomUserSerializer(
             request.user, context={"request": request}
         )
