@@ -29,7 +29,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     pagination_class = MainPagePagination
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
