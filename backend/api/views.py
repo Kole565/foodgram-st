@@ -43,26 +43,26 @@ class UserProfileViewSet(UserViewSet):
         user = request.user
 
         if request.method == "PUT":
-            serializer = CustomUserAvatarSerializer(
-                user, data=request.data, partial=True
-            )
+            return self.create_avatar(user, request.data)
+        return self.delete_avatar(user)
 
-            if serializer.is_valid():
-                serializer.save()
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+    def create_avatar(self, user, data):
+        serializer = CustomUserAvatarSerializer(
+            user, data=data, partial=True
+        )
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-        if request.method == "DELETE":
-            if user.avatar:
-                user.avatar.delete()
-                user.avatar = None
-                user.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-                return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete_avatar(self, user):
+        if user.avatar:
+            user.avatar.delete()
+            user.avatar = None
+            user.save()
 
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,
