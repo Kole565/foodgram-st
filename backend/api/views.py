@@ -13,7 +13,7 @@ from users.models import Subscription, User
 from users.serializers import SubscriptionSerializer
 
 
-class CustomUserViewSet(UserViewSet):
+class UserProfileViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
