@@ -1,19 +1,8 @@
-import base64
-
-from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
+
+from api.fields import CustomImageField
 from users.models import Subscription, User
-
-
-class CustomImageField(serializers.ImageField):
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith("data:image"):
-            format, imgstr = data.split(";base64,")
-            ext = format.split("/")[-1]
-            data = ContentFile(base64.b64decode(imgstr), name="photo." + ext)
-
-        return super().to_internal_value(data)
 
 
 class CustomUserSerializer(UserCreateSerializer):
@@ -37,7 +26,7 @@ class CustomUserSerializer(UserCreateSerializer):
     def get_is_subscribed(self, obj):
         user = self.context.get("request").user
 
-        if user.is_anonymous:
+        if not user.is_authenticated:
             return False
 
         return Subscription.objects.filter(
@@ -64,13 +53,13 @@ class CustomCreateUserSerializer(CustomUserSerializer):
 class CustomUserAvatarSerializer(serializers.ModelSerializer):
     avatar = CustomImageField(use_url=True)
 
+    class Meta:
+        model = User
+        fields = ("avatar",)
+
     def validate(self, data):
         avatar = self.initial_data.get("avatar")
         if not avatar:
             raise serializers.ValidationError("Аватар не может быть пустым")
 
         return data
-
-    class Meta:
-        model = User
-        fields = ("avatar",)
