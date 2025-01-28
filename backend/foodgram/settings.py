@@ -11,9 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
 
-DEBUG = bool(int(os.getenv('DEBUG', default='1')))
+DEBUG = os.getenv('DEBUG', default='True').lower() in "true", "1"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = list(os.getenv("ALLOWED_HOSTS", "localhost 127.0.0.1").split())
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1"
 ]
