@@ -13,11 +13,19 @@ class IngredientAdmin(ModelAdmin):
     search_fields = ("name",)
 
 
+class IngredientInRecipeInline(admin.TabularInline):
+    model = IngredientInRecipe
+    min_num = 1
+
+
 @register(Recipe)
 class RecipeAdmin(ModelAdmin):
     list_display = ("pk", "name", "author", "get_favorites", "created")
     list_filter = ("author", "name")
     search_fields = ("name", "author__username")
+    inlines = [
+        IngredientInRecipeInline
+    ]
 
     @admin.display(
         description="Количество добавлений рецепта в избранное"
