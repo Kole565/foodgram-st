@@ -68,17 +68,21 @@ class CreateIngredientsInRecipeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     amount = serializers.IntegerField()
 
-    @staticmethod
-    def validate_amount(value):
-        if value < 1:
-            raise serializers.ValidationError(
-                "Количество ингредиента должно быть больше 0!"
-            )
-        return value
-
     class Meta:
         model = IngredientInRecipe
         fields = ("id", "amount")
+
+    def validate_id(self, value):
+        return get_object_or_404(IngredientInRecipe, pk=value).id
+
+    def validate_amount(self, value):
+        if value < INGREDIENT_MIN_AMOUNT_IN_RECIPE:
+            raise serializers.ValidationError(
+                "Количество ингредиента должно быть больше {}!".format(
+                    INGREDIENT_MIN_AMOUNT_IN_RECIPE - 1
+                )
+            )
+        return value
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
