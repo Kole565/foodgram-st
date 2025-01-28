@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 
+from foodgram.constants import *
+
 
 class User(AbstractUser):
 
@@ -10,26 +12,27 @@ class User(AbstractUser):
 
     email = models.EmailField(
         verbose_name="Электронная почта",
+        max_length=USER_EMAIL_MAX_LENGTH,
         unique=True,
     )
     username = models.CharField(
         verbose_name="Имя пользователя",
-        max_length=150,
+        max_length=USER_USERNAME_MAX_LENGTH,
         unique=True,
         db_index=True,
-        validators=[RegexValidator(regex=r"^[\w.@+-]+\Z")],
+        validators=[RegexValidator(regex=USER_USERNAME_REGEX)],
     )
     first_name = models.CharField(
         verbose_name="Имя",
-        max_length=150,
+        max_length=USER_FIRST_NAME_MAX_LENGTH,
     )
     last_name = models.CharField(
         verbose_name="Фамилия",
-        max_length=150,
+        max_length=USER_LAST_NAME_MAX_LENGTH,
     )
     avatar = models.ImageField(
         verbose_name="Аватар пользователя",
-        upload_to="users/",
+        upload_to=USER_AVATAR_UPLOAD_TO,
         blank=True,
     )
 
