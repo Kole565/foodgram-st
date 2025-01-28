@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
@@ -10,7 +9,9 @@ from rest_framework.response import Response
 
 from api.serializers import CustomUserAvatarSerializer, CustomUserSerializer
 from users.models import Subscription, User
-from users.serializers import SubscriptionSerializer
+from users.serializers import (
+    CreateSubscriptionSerializer, SubscriptionSerializer
+)
 
 
 class UserProfileViewSet(UserViewSet):
