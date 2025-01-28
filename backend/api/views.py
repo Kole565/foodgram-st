@@ -40,15 +40,13 @@ class UserProfileViewSet(UserViewSet):
         url_name="avatar",
     )
     def avatar(self, request, id):
-        user = request.user
-
         if request.method == "PUT":
-            return self.create_avatar(user, request.data)
-        return self.delete_avatar(user)
+            return self.create_avatar(request)
+        return self.delete_avatar(request)
 
-    def create_avatar(self, user, data):
+    def create_avatar(self, request):
         serializer = CustomUserAvatarSerializer(
-            user, data=data, partial=True
+            request.user, data=request.data, partial=True
         )
 
         serializer.is_valid(raise_exception=True)
@@ -56,7 +54,8 @@ class UserProfileViewSet(UserViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def delete_avatar(self, user):
+    def delete_avatar(self, request):
+        user = request.user
         if user.avatar:
             user.avatar.delete()
             user.avatar = None
