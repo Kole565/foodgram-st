@@ -29,10 +29,13 @@ class SubscriptionSerializer(CustomUserSerializer):
         request = self.context.get("request")
         recipes = obj.recipes.all()
         recipes_limit = request.query_params.get("recipes_limit")
-        if recipes_limit:
-            recipes = recipes[: int(recipes_limit)]
-        return CustomRecipeSerializer(recipes, many=True).data
 
-    @staticmethod
-    def get_recipes_count(obj):
-        return obj.recipes.count()
+        if recipes_limit:
+            try:
+                recipes = recipes[: int(recipes_limit)]
+            except ValueError:
+                pass
+
+        return CustomRecipeSerializer(
+            recipes, context={"request": request}, many=True
+        ).data
