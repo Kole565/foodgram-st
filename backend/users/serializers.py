@@ -1,15 +1,15 @@
-from api.serializers import CustomUserSerializer
-from recipes.serializers import CustomRecipeSerializer
 from rest_framework import serializers
 
-from .models import User
+from api.serializers import CustomUserSerializer
+from recipes.serializers import CustomRecipeSerializer
+from users.models import Subscription, User
 
 
 class SubscriptionSerializer(CustomUserSerializer):
     recipes = serializers.SerializerMethodField(
         read_only=True, method_name="get_recipes"
     )
-    recipes_count = serializers.SerializerMethodField(read_only=True)
+    recipes_count = serializers.ReadOnlyField(source="recipes.count")
 
     class Meta:
         model = User
