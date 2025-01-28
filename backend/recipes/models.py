@@ -107,7 +107,7 @@ class Recipe(models.Model):
         return self.name
 
 
-class Favorite(models.Model):
+class UserRecipeRelation(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -118,46 +118,32 @@ class Favorite(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Рецепт",
     )
+
+    class Meta:
+        abstract = True
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"],
+                name='unique_user_recipe_%(class)s'
+            )
+        ]
+        ordering = ("-user",)
+
+    def __str__(self):
+        return f"{self.user} {self.recipe}"
+
+
+class Favorite(UserRecipeRelation):
 
     class Meta:
         verbose_name = "Избранное"
         verbose_name_plural = "Избранное"
         default_related_name = "favorites"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "recipe"],
-                name="unique_user_favorite"
-            )
-        ]
-        ordering = ("-user",)
-
-    def __str__(self):
-        return f"{self.user} {self.recipe}"
 
 
 class ShoppingCart(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name="Пользователь",
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name="Рецепт",
-    )
 
     class Meta:
         verbose_name = "Список покупок"
         verbose_name_plural = "Списки покупок"
         default_related_name = "shopping_carts"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "recipe"],
-                name="unique_user_shopping_cart"
-            )
-        ]
-        ordering = ("-user",)
-
-    def __str__(self):
-        return f"{self.user} {self.recipe}"
