@@ -72,17 +72,17 @@ class UserProfileViewSet(UserViewSet):
         url_name="subscriptions",
     )
     def subscriptions(self, request):
-        queryset = User.objects.filter(author__subscriber=self.request.user)
-
-        if queryset:
-            pages = self.paginate_queryset(queryset)
-            serializer = SubscriptionSerializer(
-                pages, many=True, context={"request": request}
-            )
-            return self.get_paginated_response(serializer.data)
-        return Response(
-            "Вы ни на кого не подписаны.", status=status.HTTP_400_BAD_REQUEST
+        queryset = User.objects.filter(
+            # For user in users if user's authors include request.user
+            subscriptions_where_subscriber__author=request.user
         )
+
+        pages = self.paginate_queryset(queryset)
+        serializer = SubscriptionSerializer(
+            pages, many=True, context={"request": request}
+        )
+
+        return self.get_paginated_response(serializer.data)
 
     @action(
         detail=True,
@@ -92,36 +92,38 @@ class UserProfileViewSet(UserViewSet):
         url_name="subscribe",
     )
     def subscribe(self, request, id):
-        subscriber = request.user
-        author = get_object_or_404(User, id=id)
-        change_subscription_status = Subscription.objects.filter(
-            subscriber=subscriber.id, author=author.id
-        )
         if request.method == "POST":
-            if subscriber == author:
-                return Response(
-                    "Вы пытаетесь подписаться на себя!!",
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            if change_subscription_status.exists():
-                return Response(
-                    f"Вы теперь подписаны на {author}",
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            subscribe = Subscription.objects.create(
-                subscriber=subscriber, author=author
-            )
-            subscribe.save()
+            return self.create_subscription(request, id)
+        return self.delete_subscription(request, id)
 
-            serializer = SubscriptionSerializer(
-                request.user, context={"request": request}
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        if change_subscription_status.exists():
-            change_subscription_status.delete()
+    def create_subscription(self, request, id):
+        serializer = CreateSubscriptionSerializer(
+            data={
+                "subscriber": request.user.id,
+                "author": id,
+            },
+            context={"request": request}
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete_subscription(self, request, id):
+        subscription = Subscription.objects.filter(
+            subscriber=request.user.id, author=id
+        )
+
+        author = User.objects.get(pk=id)
+        if not subscription.exists():
             return Response(
-                f"Вы отписались от {author}", status=status.HTTP_204_NO_CONTENT
+                f"Вы не подписаны на {author}",
+                status=status.HTTP_400_BAD_REQUEST
             )
+
+        subscription.delete()
+
         return Response(
-            f"Вы не подписаны на {author}", status=status.HTTP_400_BAD_REQUEST
+            f"Вы отписались от {author}", status=status.HTTP_204_NO_CONTENT
         )
