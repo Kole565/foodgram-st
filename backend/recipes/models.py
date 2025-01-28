@@ -2,15 +2,19 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from foodgram.constants import *
+
 User = get_user_model()
 
 
 class Ingredient(models.Model):
     name = models.CharField(
-        max_length=200, verbose_name="Название ингредиента"
+        max_length=INGREDIENT_NAME_MAX_LENGTH,
+        verbose_name="Название ингредиента"
     )
     measurement_unit = models.CharField(
-        max_length=200, verbose_name="Единицы измерения"
+        max_length=INGREDIENT_MEASUREMENT_UNIT_MAX_LENGTH,
+        verbose_name="Единицы измерения"
     )
 
     class Meta:
@@ -38,7 +42,7 @@ class IngredientInRecipe(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name="Количество",
         validators=[
-            MinValueValidator(1),
+            MinValueValidator(INGREDIENT_MIN_AMOUNT_IN_RECIPE),
         ],
     )
 
@@ -57,7 +61,10 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Автор рецепта",
     )
-    name = models.CharField(max_length=200, verbose_name="Название рецепта")
+    name = models.CharField(
+        max_length=RECIPE_NAME_MAX_LENGTH,
+        verbose_name="Название рецепта"
+    )
     image = models.ImageField(
         verbose_name="Фотография рецепта", upload_to="recipes/", blank=True
     )
@@ -71,7 +78,7 @@ class Recipe(models.Model):
     cooking_time = models.PositiveSmallIntegerField(
         "Время приготовления",
         validators=[
-            MinValueValidator(1),
+            MinValueValidator(RECIPE_MIN_COOKING_TIME),
         ],
     )
     created = models.DateTimeField(
