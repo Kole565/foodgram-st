@@ -1,7 +1,7 @@
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
-from api.fields import CustomImageField
+from api.fields import Bit64ImageField
 from users.models import Subscription, User
 
 
@@ -9,7 +9,7 @@ class CustomUserSerializer(UserCreateSerializer):
     """For reading"""
 
     is_subscribed = serializers.SerializerMethodField()
-    avatar = CustomImageField(use_url=True)
+    avatar = Bit64ImageField(use_url=True)
 
     class Meta:
         model = User
@@ -51,7 +51,7 @@ class CustomCreateUserSerializer(CustomUserSerializer):
 
 
 class CustomUserAvatarSerializer(serializers.ModelSerializer):
-    avatar = CustomImageField(use_url=True)
+    avatar = Bit64ImageField(use_url=True)
 
     class Meta:
         model = User

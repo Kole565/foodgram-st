@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from api.serializers import CustomImageField, CustomUserSerializer
+from api.fields import Bit64ImageField
+from api.serializers import CustomUserSerializer
 from foodgram.constants import *
 from recipes.models import (
     Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart
@@ -85,13 +86,24 @@ class CreateIngredientsInRecipeSerializer(serializers.ModelSerializer):
         return value
 
 
+class CreateIngredientSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    amount = serializers.IntegerField()
+
+    class Meta:
+        model = Ingredient
+        fields = ("id", "amount")
+
+
 class CreateRecipeSerializer(serializers.ModelSerializer):
-    ingredients = CreateIngredientsInRecipeSerializer(many=True)
-    image = CustomImageField(use_url=True)
+    ingredients = CreateIngredientSerializer(many=True)
+    image = Bit64ImageField(use_url=True)
 
     class Meta:
         model = Recipe
-        fields = ("ingredients", "name", "image", "text", "cooking_time")
+        fields = (
+            "ingredients", "name", "image", "name", "text", "cooking_time"
+        )
 
     def to_representation(self, instance):
         serializer = RecipeSerializer(
@@ -156,8 +168,8 @@ class CustomRecipeSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "image", "cooking_time")
 
 
-class AddFavoritesSerializer(serializers.ModelSerializer):
-    image = CustomImageField()
+class FavoriteSerializer(serializers.ModelSerializer):
+    image = Bit64ImageField()
 
     class Meta:
         model = Recipe
