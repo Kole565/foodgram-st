@@ -4,10 +4,13 @@ from django.db import models
 
 
 class User(AbstractUser):
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+
     email = models.EmailField(
         verbose_name="Электронная почта",
         unique=True,
-        validators=[RegexValidator(regex=r"^[\w.@+-]+\Z")],
     )
     username = models.CharField(
         verbose_name="Имя пользователя",
@@ -30,13 +33,10 @@ class User(AbstractUser):
         blank=True,
     )
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
-
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
-        ordering = ("id",)
+        ordering = ("username",)
 
     def __str__(self):
         return self.username
@@ -65,6 +65,7 @@ class Subscription(models.Model):
                 fields=["subscriber", "author"], name="unique_subscription"
             )
         ]
+        ordering = ("author__username",)
 
     def __str__(self):
         return f"{self.subscriber} {self.author}"
