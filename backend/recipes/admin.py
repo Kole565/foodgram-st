@@ -1,8 +1,10 @@
+from django.contrib import admin
 from django.contrib.admin import ModelAdmin, register
-from recipes.models import Ingredient, IngredientInRecipe, Recipe
-from users.models import Subscription
 
-from .models import Favorite, ShoppingCart
+from recipes.models import (
+    Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart
+)
+from users.models import Subscription
 
 
 @register(Ingredient)
