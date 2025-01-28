@@ -14,21 +14,21 @@ class IngredientFilter(FilterSet):
 
 
 class RecipeFilter(django_filters.FilterSet):
-    is_favorited = django_filters.filters.NumberFilter(
+    is_favorited = django_filters.filters.BooleanFilter(
         method="is_recipe_in_favorites_filter"
     )
-    is_in_shopping_cart = django_filters.filters.NumberFilter(
+    is_in_shopping_cart = django_filters.filters.BooleanFilter(
         method="is_recipe_in_shoppingcart_filter"
     )
 
     def is_recipe_in_favorites_filter(self, queryset, name, value):
-        if value == 1:
+        if value:
             user = self.request.user
             return queryset.filter(favorites__user_id=user.id)
         return queryset
 
     def is_recipe_in_shoppingcart_filter(self, queryset, name, value):
-        if value == 1:
+        if value:
             user = self.request.user
             return queryset.filter(shopping_recipe__user_id=user.id)
         return queryset
