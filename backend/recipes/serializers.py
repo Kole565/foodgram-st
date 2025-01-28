@@ -100,7 +100,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def validate(self, data):
-        ingredients = self.initial_data.get("ingredients")
+        ingredients = self.data.get("ingredients")
         if not ingredients:
             raise serializers.ValidationError(
                 "Список ингредиентов не может быть пустым!"
