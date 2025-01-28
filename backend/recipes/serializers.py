@@ -1,8 +1,11 @@
-from api.serializers import CustomImageField, CustomUserSerializer
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from .models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
-                     ShoppingCart)
+from api.serializers import CustomImageField, CustomUserSerializer
+from foodgram.constants import *
+from recipes.models import (
+    Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart
+)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
