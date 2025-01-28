@@ -35,13 +35,11 @@ class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
         "Recipe",
         on_delete=models.CASCADE,
-        related_name="ingredients",
         verbose_name="Рецепт",
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name="recipes",
         verbose_name="Ингредиент",
     )
     amount = models.PositiveSmallIntegerField(
@@ -54,6 +52,7 @@ class IngredientInRecipe(models.Model):
     class Meta:
         verbose_name = "Ингредиент в рецепте"
         verbose_name_plural = "Ингредиенты в рецептах"
+        default_related_name = "+"
         constraints = [
             models.UniqueConstraint(
                 fields=["recipe", "ingredient"],
@@ -135,15 +134,15 @@ class UserRecipeRelation(models.Model):
 
 class Favorite(UserRecipeRelation):
 
-    class Meta:
+    class Meta(UserRecipeRelation.Meta):
         verbose_name = "Избранное"
         verbose_name_plural = "Избранное"
         default_related_name = "favorites"
 
 
-class ShoppingCart(models.Model):
+class ShoppingCart(UserRecipeRelation):
 
-    class Meta:
+    class Meta(UserRecipeRelation.Meta):
         verbose_name = "Список покупок"
         verbose_name_plural = "Списки покупок"
         default_related_name = "shopping_carts"
