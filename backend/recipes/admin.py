@@ -17,7 +17,7 @@ class IngredientAdmin(ModelAdmin):
 class RecipeAdmin(ModelAdmin):
     list_display = ("pk", "name", "author", "get_favorites", "created")
     list_filter = ("author", "name")
-    search_fields = ("name", "author")
+    search_fields = ("name", "author__username")
 
     def get_favorites(self, obj):
         return obj.favorites.count()
@@ -40,7 +40,7 @@ class ShoppingCartAdmin(ModelAdmin):
 @register(Subscription)
 class SubscriptionAdmin(ModelAdmin):
     list_display = ("pk", "subscriber", "author")
-    search_fields = ("subscriber", "author")
+    search_fields = ("subscriber__username", "author__username")
     list_filter = ("subscriber", "author")
 
 
