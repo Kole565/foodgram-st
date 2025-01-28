@@ -19,12 +19,11 @@ class RecipeAdmin(ModelAdmin):
     list_filter = ("author", "name")
     search_fields = ("name", "author__username")
 
+    @admin.display(
+        description="Количество добавлений рецепта в избранное"
+    )
     def get_favorites(self, obj):
         return obj.favorites.count()
-
-    get_favorites.short_description = (
-        "Количество добавлений рецепта в избранное"
-    )
 
 
 @register(IngredientInRecipe)
