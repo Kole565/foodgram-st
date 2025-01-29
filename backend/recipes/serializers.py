@@ -60,7 +60,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         if (
             request is not None
             and request.user.is_authenticated
-            and request.user.favorites(pk=obj.id).exists()
+            and request.user.favorites.filter(pk=obj.id).exists()
         ):
             return True
         return False
@@ -170,17 +170,34 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class CustomRecipeSerializer(serializers.ModelSerializer):
-    """For list"""
+class ShortRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
         fields = ("id", "name", "image", "cooking_time")
 
 
-class FavoriteSerializer(serializers.ModelSerializer):
-    image = Bit64ImageField()
+class UserRecipeRelationSerializer:
 
     class Meta:
-        model = Recipe
-        fields = ("id", "name", "image", "cooking_time")
+        fields = ("user", "recipe")
+
+    def to_representation(self, instance):
+        serializer = ShortRecipeSerializer(instance.recipe)
+        return serializer.data
+
+
+class FavoriteSerializer(
+    UserRecipeRelationSerializer, serializers.ModelSerializer
+):
+
+    class Meta(UserRecipeRelationSerializer.Meta):
+        model = Favorite
+
+
+class ShoppingCartSerializer(
+    UserRecipeRelationSerializer, serializers.ModelSerializer
+):
+
+    class Meta(UserRecipeRelationSerializer.Meta):
+        model = ShoppingCart
