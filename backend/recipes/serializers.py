@@ -5,7 +5,7 @@ from api.fields import Bit64ImageField
 from api.serializers import UserProfileSerializer
 from foodgram.constants import *
 from recipes.models import (
-    Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart
+    Favorite, Ingredient, IngredientInRecipe, Recipe
 )
 
 
@@ -57,17 +57,23 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         request = self.context.get("request")
-        if request is None or request.user.is_anonymous:
-            return False
-        return Favorite.objects.filter(user=request.user, recipe=obj).exists()
+        if (
+            request is not None
+            and request.user.is_authenticated
+            and request.user.favorites(pk=obj.id).exists()
+        ):
+            return True
+        return False
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get("request")
-        if request is None or request.user.is_anonymous:
-            return False
-        return ShoppingCart.objects.filter(
-            user=request.user, recipe=obj
-        ).exists()
+        if (
+            request is not None
+            and request.user.is_authenticated
+            and request.user.shopping_carts(pk=obj.id).exists()
+        ):
+            return True
+        return False
 
 
 class CreateIngredientsInRecipeSerializer(serializers.ModelSerializer):
@@ -116,8 +122,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         )
         return serializer.data
 
-    def validate(self, data):
-        ingredients = self.data.get("ingredients")
+    def validate_ingredients(self, ingredients):
         if not ingredients:
             raise serializers.ValidationError(
                 "Список ингредиентов не может быть пустым!"
@@ -137,7 +142,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
             ingredient_list.append(ingredient["id"])
 
-        return data
+        return ingredients
 
     def create_ingredients(self, ingredients, recipe):
         for element in ingredients:
