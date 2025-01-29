@@ -34,7 +34,7 @@ class UserProfileSerializer(UserCreateSerializer):
 
 
 class CustomCreateUserSerializer(UserProfileSerializer):
-    """For creating"""
+    """Serialize user model for creating."""
 
     class Meta:
         model = User
