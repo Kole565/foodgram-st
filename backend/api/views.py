@@ -7,7 +7,7 @@ from rest_framework.permissions import (
 )
 from rest_framework.response import Response
 
-from api.serializers import CustomUserAvatarSerializer, UserProfileSerializer
+from api.serializers import UserProfileAvatarSerializer, UserProfileSerializer
 from users.models import Subscription, User
 from users.serializers import (
     CreateSubscriptionSerializer, SubscriptionSerializer
@@ -46,7 +46,7 @@ class UserProfileViewSet(UserViewSet):
         return self.delete_avatar(request)
 
     def create_avatar(self, request):
-        serializer = CustomUserAvatarSerializer(
+        serializer = UserProfileAvatarSerializer(
             request.user, data=request.data, partial=True
         )
 

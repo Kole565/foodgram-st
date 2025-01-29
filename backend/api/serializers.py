@@ -33,7 +33,7 @@ class UserProfileSerializer(UserCreateSerializer):
         ).exists()
 
 
-class CustomCreateUserSerializer(UserProfileSerializer):
+class CreateUserProfileSerializer(UserProfileSerializer):
     """Serialize user model for creating."""
 
     class Meta:
@@ -49,7 +49,7 @@ class CustomCreateUserSerializer(UserProfileSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
 
-class CustomUserAvatarSerializer(serializers.ModelSerializer):
+class UserProfileAvatarSerializer(serializers.ModelSerializer):
     avatar = Bit64ImageField(use_url=True)
 
     class Meta:
