@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
 from api.fields import Bit64ImageField
-from users.models import Subscription, User
+from users.models import User
 
 
 class CustomUserSerializer(UserCreateSerializer):
@@ -29,12 +29,12 @@ class CustomUserSerializer(UserCreateSerializer):
         if not user.is_authenticated:
             return False
 
-        return Subscription.objects.filter(
-            subscriber=user, author=obj.id
+        return user.subscriptions_where_subscriber.filter(
+            author=obj.id
         ).exists()
 
 
-class CustomCreateUserSerializer(CustomUserSerializer):
+class CustomCreateUserSerializer(UserProfileSerializer):
     """For creating"""
 
     class Meta:
