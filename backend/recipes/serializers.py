@@ -9,29 +9,34 @@ from recipes.models import (
 )
 
 
-class IngredientSerializer(serializers.ModelSerializer):
+class ShortIngredientsSerializer(serializers.ModelSerializer):
+    """Serialize ingredients without IngredientInRecipe fields."""
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    measurement_unit = serializers.CharField()
+
     class Meta:
         model = Ingredient
         fields = ("id", "name", "measurement_unit")
 
 
-class IngredientInRecipeSerializer(serializers.ModelSerializer):
-
-    id = serializers.ReadOnlyField(source="ingredient.id")
-    name = serializers.ReadOnlyField(source="ingredient.name")
-    measurement_unit = serializers.ReadOnlyField(
+class IngredientSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source="ingredient.id")
+    name = serializers.CharField(source="ingredient.name")
+    measurement_unit = serializers.CharField(
         source="ingredient.measurement_unit"
     )
+    amount = serializers.IntegerField()
 
     class Meta:
-        model = IngredientInRecipe
+        model = Ingredient
         fields = ("id", "name", "measurement_unit", "amount")
 
 
 class RecipeSerializer(serializers.ModelSerializer):
     author = UserProfileSerializer()
-    ingredients = IngredientInRecipeSerializer(
-        source="ingredient_list", many=True
+    ingredients = IngredientSerializer(
+        source="recipe_ingredientinrecipe", many=True
     )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
@@ -86,7 +91,7 @@ class CreateIngredientsInRecipeSerializer(serializers.ModelSerializer):
         return value
 
 
-class CreateIngredientSerializer(serializers.ModelSerializer):
+class CreateShortIngredientsSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     amount = serializers.IntegerField()
 
@@ -96,7 +101,7 @@ class CreateIngredientSerializer(serializers.ModelSerializer):
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
-    ingredients = CreateIngredientSerializer(many=True)
+    ingredients = CreateShortIngredientsSerializer(many=True)
     image = Bit64ImageField(use_url=True)
 
     class Meta:
