@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from foodgram.constants import *
 
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
@@ -120,6 +121,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
+    "PAGE_SIZE": DEFAULT_PAGE_SIZE
 }
 
 
