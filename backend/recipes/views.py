@@ -1,6 +1,5 @@
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -15,14 +14,14 @@ from recipes.models import (
     Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart
 )
 from recipes.serializers import (
-    CreateRecipeSerializer, FavoriteSerializer, RecipeSerializer,
-    ShortIngredientsSerializer
+    CreateRecipeSerializer, FavoriteSerializer, IngredientSerializer,
+    RecipeSerializer, ShoppingCartSerializer
 )
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
-    serializer_class = ShortIngredientsSerializer
+    serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
