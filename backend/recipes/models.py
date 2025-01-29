@@ -79,7 +79,8 @@ class Recipe(models.Model):
         verbose_name="Название рецепта"
     )
     image = models.ImageField(
-        verbose_name="Фотография рецепта", upload_to="recipes/", blank=True
+        verbose_name="Фотография рецепта", upload_to=RECIPE_IMAGE_UPLOAD_TO,
+        blank=True
     )
     text = models.TextField(verbose_name="Описание рецепта")
     ingredients = models.ManyToManyField(
