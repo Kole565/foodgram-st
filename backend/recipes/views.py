@@ -14,14 +14,14 @@ from recipes.models import (
     Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart
 )
 from recipes.serializers import (
-    CreateRecipeSerializer, FavoriteSerializer, IngredientSerializer,
+    CreateRecipeSerializer, FavoriteSerializer, ShortIngredientsSerializer,
     RecipeSerializer, ShoppingCartSerializer
 )
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
+    serializer_class = ShortIngredientsSerializer
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
