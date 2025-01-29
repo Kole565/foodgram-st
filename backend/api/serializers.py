@@ -5,9 +5,8 @@ from api.fields import Bit64ImageField
 from users.models import User
 
 
-class CustomUserSerializer(UserCreateSerializer):
-    """For reading"""
-
+class UserProfileSerializer(UserCreateSerializer):
+    """Serialize user model for reading."""
     is_subscribed = serializers.SerializerMethodField()
     avatar = Bit64ImageField(use_url=True)
 

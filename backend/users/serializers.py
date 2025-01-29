@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.serializers import CustomUserSerializer
+from api.serializers import UserProfileSerializer
 from recipes.serializers import CustomRecipeSerializer
 from users.models import Subscription, User
 

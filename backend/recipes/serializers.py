@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from api.fields import Bit64ImageField
-from api.serializers import CustomUserSerializer
+from api.serializers import UserProfileSerializer
 from foodgram.constants import *
 from recipes.models import (
     Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart
@@ -29,7 +29,7 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    author = CustomUserSerializer()
+    author = UserProfileSerializer()
     ingredients = IngredientInRecipeSerializer(
         source="ingredient_list", many=True
     )

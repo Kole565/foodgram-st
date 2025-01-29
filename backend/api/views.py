@@ -7,7 +7,7 @@ from rest_framework.permissions import (
 )
 from rest_framework.response import Response
 
-from api.serializers import CustomUserAvatarSerializer, CustomUserSerializer
+from api.serializers import CustomUserAvatarSerializer, UserProfileSerializer
 from users.models import Subscription, User
 from users.serializers import (
     CreateSubscriptionSerializer, SubscriptionSerializer
@@ -16,7 +16,7 @@ from users.serializers import (
 
 class UserProfileViewSet(UserViewSet):
     queryset = User.objects.all()
-    serializer_class = CustomUserSerializer
+    serializer_class = UserProfileSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     pagination_class = LimitOffsetPagination
 
@@ -28,7 +28,7 @@ class UserProfileViewSet(UserViewSet):
         url_name="me",
     )
     def me(self, request):
-        serializer = CustomUserSerializer(
+        serializer = UserProfileSerializer(
             request.user, context={"request": request}
         )
         return Response(serializer.data)
