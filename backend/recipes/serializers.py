@@ -143,6 +143,18 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
         return super().update(instance, validated_data)
 
+    def create_ingredients(self, ingredients, recipe):
+        instances = []
+        for element in ingredients:
+            ingredient_id = element["id"]
+            amount = element["amount"]
+
+            instances.append(IngredientInRecipe(
+                ingredient_id=ingredient_id, recipe=recipe, amount=amount
+            ))
+
+        IngredientInRecipe.objects.bulk_create(instances)
+
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
 
