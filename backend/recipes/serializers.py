@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.shortcuts import get_object_or_404
 
 from api.fields import Bit64ImageField
 from api.serializers import UserProfileSerializer
@@ -85,7 +84,14 @@ class CreateShortIngredientsSerializer(serializers.ModelSerializer):
         fields = ("id", "amount")
 
     def validate_id(self, id):
-        return get_object_or_404(Ingredient, id=id).id
+        try:
+            Ingredient.objects.get(id=id)
+        except Ingredient.DoesNotExist:
+            raise serializers.ValidationError(
+                f"Ингредиента с id {id} не существует."
+            )
+
+        return id
 
     def validate_amount(self, value):
         if value < INGREDIENT_MIN_AMOUNT_IN_RECIPE:
