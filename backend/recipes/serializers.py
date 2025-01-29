@@ -119,30 +119,13 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 "Список ингредиентов не может быть пустым!"
             )
 
-        ingredient_list = []
-
-        for ingredient in ingredients:
-            if ingredient["id"] in ingredient_list:
-                raise serializers.ValidationError(
-                    "Ингредиенты должны быть уникальными!"
-                )
-            if not Ingredient.objects.filter(id=ingredient["id"]).exists():
-                raise serializers.ValidationError(
-                    "Ингредиент должен существовать!"
-                )
-
-            ingredient_list.append(ingredient["id"])
+        ingredients_ids = [el["id"] for el in ingredients]
+        if len(ingredients_ids) != len(set(ingredients_ids)):
+            raise serializers.ValidationError(
+                "Ингредиенты должны быть уникальными!"
+            )
 
         return ingredients
-
-    def create_ingredients(self, ingredients, recipe):
-        for element in ingredients:
-            id = element["id"]
-            ingredient = Ingredient.objects.get(pk=id)
-            amount = element["amount"]
-            IngredientInRecipe.objects.create(
-                ingredient=ingredient, recipe=recipe, amount=amount
-            )
 
     def create(self, validated_data):
         ingredients = validated_data.pop("ingredients")
