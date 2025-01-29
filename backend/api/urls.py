@@ -4,7 +4,6 @@ from rest_framework import routers
 from api.views import UserProfileViewSet
 from recipes.views import IngredientViewSet, RecipeViewSet
 
-
 router = routers.DefaultRouter()
 router.register("ingredients", IngredientViewSet, basename="ingredients")
 router.register("recipes", RecipeViewSet, basename="recipes")

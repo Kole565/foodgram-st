@@ -2,7 +2,12 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from foodgram.constants import *
+from foodgram.constants import (INGREDIENT_MEASUREMENT_UNIT_MAX_LENGTH,
+                                INGREDIENT_MIN_AMOUNT_IN_RECIPE,
+                                INGREDIENT_NAME_MAX_LENGTH,
+                                RECIPE_IMAGE_UPLOAD_TO,
+                                RECIPE_MIN_COOKING_TIME,
+                                RECIPE_NAME_MAX_LENGTH)
 
 User = get_user_model()
 
@@ -10,11 +15,11 @@ User = get_user_model()
 class Ingredient(models.Model):
     name = models.CharField(
         max_length=INGREDIENT_NAME_MAX_LENGTH,
-        verbose_name="Название ингредиента"
+        verbose_name="Название ингредиента",
     )
     measurement_unit = models.CharField(
         max_length=INGREDIENT_MEASUREMENT_UNIT_MAX_LENGTH,
-        verbose_name="Единицы измерения"
+        verbose_name="Единицы измерения",
     )
 
     class Meta:
@@ -59,7 +64,7 @@ class IngredientInRecipe(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["recipe", "ingredient"],
-                name="unique_ingredient_recipe_relation"
+                name="unique_ingredient_recipe_relation",
             )
         ]
         ordering = ("-id",)
@@ -75,12 +80,12 @@ class Recipe(models.Model):
         verbose_name="Автор рецепта",
     )
     name = models.CharField(
-        max_length=RECIPE_NAME_MAX_LENGTH,
-        verbose_name="Название рецепта"
+        max_length=RECIPE_NAME_MAX_LENGTH, verbose_name="Название рецепта"
     )
     image = models.ImageField(
-        verbose_name="Фотография рецепта", upload_to=RECIPE_IMAGE_UPLOAD_TO,
-        blank=True
+        verbose_name="Фотография рецепта",
+        upload_to=RECIPE_IMAGE_UPLOAD_TO,
+        blank=True,
     )
     text = models.TextField(verbose_name="Описание рецепта")
     ingredients = models.ManyToManyField(
@@ -97,14 +102,14 @@ class Recipe(models.Model):
     created = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
-        verbose_name='Дата публикации рецепта'
+        verbose_name="Дата публикации рецепта",
     )
 
     class Meta:
         verbose_name = "Рецепт"
         verbose_name_plural = "Рецепты"
         default_related_name = "recipes"
-        ordering = ('-created',)
+        ordering = ("-created",)
 
     def __str__(self):
         return self.name
@@ -126,8 +131,7 @@ class UserRecipeRelation(models.Model):
         abstract = True
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "recipe"],
-                name='unique_user_recipe_%(class)s'
+                fields=["user", "recipe"], name="unique_user_recipe_%(class)s"
             )
         ]
         ordering = ("-user",)

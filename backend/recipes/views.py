@@ -10,13 +10,11 @@ from rest_framework.response import Response
 from api.pagination import MainPagePagination
 from api.permissions import IsAuthorOrReadOnly
 from recipes.filters import IngredientFilter, RecipeFilter
-from recipes.models import (
-    Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart
-)
-from recipes.serializers import (
-    CreateRecipeSerializer, FavoriteSerializer, ShortIngredientsSerializer,
-    RecipeSerializer, ShoppingCartSerializer
-)
+from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
+                            ShoppingCart)
+from recipes.serializers import (CreateRecipeSerializer, FavoriteSerializer,
+                                 RecipeSerializer, ShoppingCartSerializer,
+                                 ShortIngredientsSerializer)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -118,7 +116,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         except ShoppingCart.DoesNotExist:
             return Response(
                 "Рецепт не в списке покупок (корзине).",
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         return Response(status=status.HTTP_204_NO_CONTENT)

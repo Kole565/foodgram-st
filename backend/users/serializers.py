@@ -65,13 +65,13 @@ class CreateSubscriptionSerializer(serializers.ModelSerializer):
             "recipes_count",
         )
         extra_kwargs = {
-            "author": {'write_only': True},
-            "subscriber": {'write_only': True},
+            "author": {"write_only": True},
+            "subscriber": {"write_only": True},
         }
 
     def to_representation(self, instance):
         data = UserProfileSerializer(
-            instance.author, context={"request": self.context['request']}
+            instance.author, context={"request": self.context["request"]}
         ).data
 
         data.update(super().to_representation(instance))

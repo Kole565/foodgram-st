@@ -1,9 +1,10 @@
 import os
 from pathlib import Path
-from foodgram.constants import *
 
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
+
+from foodgram.constants import DEFAULT_PAGE_SIZE
 
 load_dotenv()
 
@@ -12,12 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
 
-DEBUG = os.getenv('DEBUG', default='True').lower() in "true", "1"
+DEBUG = os.getenv("DEBUG", default="True").lower() in "true", "1"
 
 ALLOWED_HOSTS = list(os.getenv("ALLOWED_HOSTS", "localhost 127.0.0.1").split())
-CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1"
-]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -67,10 +66,8 @@ WSGI_APPLICATION = "foodgram.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv(
-            "DB_ENGINE", default="django.db.backends.sqlite3"
-        ),
-        "NAME": os.getenv("DB_NAME", default=(BASE_DIR / 'db.sqlite3')),
+        "ENGINE": os.getenv("DB_ENGINE", default="django.db.backends.sqlite3"),
+        "NAME": os.getenv("DB_NAME", default=(BASE_DIR / "db.sqlite3")),
         "USER": os.getenv("POSTGRES_USER", default=None),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", default=None),
         "HOST": os.getenv("DB_HOST", default=None),
@@ -121,7 +118,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
-    "PAGE_SIZE": DEFAULT_PAGE_SIZE
+    "PAGE_SIZE": DEFAULT_PAGE_SIZE,
 }
 
 

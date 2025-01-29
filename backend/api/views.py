@@ -2,16 +2,14 @@ from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import (
-    IsAuthenticated, IsAuthenticatedOrReadOnly
-)
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
 from api.serializers import UserProfileAvatarSerializer, UserProfileSerializer
 from users.models import Subscription, User
-from users.serializers import (
-    CreateSubscriptionSerializer, SubscriptionSerializer
-)
+from users.serializers import (CreateSubscriptionSerializer,
+                               SubscriptionSerializer)
 
 
 class UserProfileViewSet(UserViewSet):
@@ -102,7 +100,7 @@ class UserProfileViewSet(UserViewSet):
                 "subscriber": request.user.id,
                 "author": id,
             },
-            context={"request": request}
+            context={"request": request},
         )
 
         serializer.is_valid(raise_exception=True)
@@ -119,7 +117,7 @@ class UserProfileViewSet(UserViewSet):
         if not subscription.exists():
             return Response(
                 f"Вы не подписаны на {author}",
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         subscription.delete()

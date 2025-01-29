@@ -21,14 +21,10 @@ class MyUserAdmin(UserAdmin):
     list_filter = ("username", "email")
     search_fields = ("username", "email")
 
-    @admin.display(
-        description="Количество рецептов"
-    )
+    @admin.display(description="Количество рецептов")
     def recipes_count(self, obj):
         return obj.recipes.count()
 
-    @admin.display(
-        description="Количество подписчиков"
-    )
+    @admin.display(description="Количество подписчиков")
     def subscribers_count(self, obj):
         return obj.subscriptions_where_author.count()

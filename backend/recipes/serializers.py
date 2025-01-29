@@ -2,10 +2,9 @@ from rest_framework import serializers
 
 from api.fields import Bit64ImageField
 from api.serializers import UserProfileSerializer
-from foodgram.constants import *
-from recipes.models import (
-    Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart
-)
+from foodgram.constants import INGREDIENT_MIN_AMOUNT_IN_RECIPE
+from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
+                            ShoppingCart)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -23,6 +22,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class ShortIngredientsSerializer(serializers.ModelSerializer):
     """Serialize ingredients without IngredientInRecipe fields."""
+
     id = serializers.IntegerField()
     name = serializers.CharField()
     measurement_unit = serializers.CharField()
@@ -110,7 +110,12 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
-            "ingredients", "name", "image", "name", "text", "cooking_time"
+            "ingredients",
+            "name",
+            "image",
+            "name",
+            "text",
+            "cooking_time",
         )
 
     def to_representation(self, instance):
@@ -155,9 +160,11 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             ingredient_id = element["id"]
             amount = element["amount"]
 
-            instances.append(IngredientInRecipe(
-                ingredient_id=ingredient_id, recipe=recipe, amount=amount
-            ))
+            instances.append(
+                IngredientInRecipe(
+                    ingredient_id=ingredient_id, recipe=recipe, amount=amount
+                )
+            )
 
         IngredientInRecipe.objects.bulk_create(instances)
 

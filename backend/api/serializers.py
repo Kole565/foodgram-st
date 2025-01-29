@@ -7,6 +7,7 @@ from users.models import User
 
 class UserProfileSerializer(UserCreateSerializer):
     """Serialize user model for reading."""
+
     is_subscribed = serializers.SerializerMethodField()
     avatar = Bit64ImageField(use_url=True)
 
