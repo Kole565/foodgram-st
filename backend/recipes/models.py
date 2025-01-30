@@ -65,7 +65,7 @@ class IngredientInRecipe(models.Model):
                 name="unique_ingredient_recipe_relation",
             )
         ]
-        ordering = ("-id",)
+        ordering = ("recipe__name",)
 
     def __str__(self):
         return f"{self.ingredient} {self.recipe}"
