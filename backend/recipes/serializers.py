@@ -122,7 +122,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         )
         return serializer.data
 
-    def validate_ingredients(self, ingredients):
+    def validate(self, data):
+        ingredients = data.get("ingredients")
+
         if not ingredients:
             raise serializers.ValidationError(
                 "Список ингредиентов не может быть пустым!"
@@ -134,7 +136,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 "Ингредиенты должны быть уникальными!"
             )
 
-        return ingredients
+        return data
 
     def create(self, validated_data):
         ingredients = validated_data.pop("ingredients")
