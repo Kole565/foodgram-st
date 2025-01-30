@@ -185,6 +185,18 @@ class UserRecipeRelationSerializer:
         serializer = ShortRecipeSerializer(instance.recipe)
         return serializer.data
 
+    def validate(self, data, related_name):
+        user = data.get("user")
+        recipe = data.get("recipe")
+
+        if getattr(user, related_name).filter(recipe__id=recipe.id).exists():
+            raise serializers.ValidationError(
+                f"{related_name} пользователя {user.username} "
+                f"уже содержит рецепт {recipe.name}."
+            )
+
+        return data
+
 
 class FavoriteSerializer(
     UserRecipeRelationSerializer, serializers.ModelSerializer
@@ -193,6 +205,9 @@ class FavoriteSerializer(
     class Meta(UserRecipeRelationSerializer.Meta):
         model = Favorite
 
+    def validate(self, data):
+        return super().validate(data, "favorites")
+
 
 class ShoppingCartSerializer(
     UserRecipeRelationSerializer, serializers.ModelSerializer
@@ -200,3 +215,6 @@ class ShoppingCartSerializer(
 
     class Meta(UserRecipeRelationSerializer.Meta):
         model = ShoppingCart
+
+    def validate(self, data):
+        return super().validate(data, "shopping_carts")
