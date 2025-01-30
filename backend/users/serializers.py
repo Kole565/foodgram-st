@@ -32,7 +32,7 @@ class SubscriptionSerializer(UserProfileSerializer):
 
         if recipes_limit:
             try:
-                recipes = recipes[:int(recipes_limit)]
+                recipes = recipes[: int(recipes_limit)]
             except ValueError:
                 pass
 

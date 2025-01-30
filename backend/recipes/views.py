@@ -59,8 +59,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 request, pk, FavoriteSerializer
             )
         return self.delete_user_recipe_relation(
-            request, pk, "favorites", Favorite.DoesNotExist,
-            "Рецепт не в избранном."
+            request,
+            pk,
+            "favorites",
+            Favorite.DoesNotExist,
+            "Рецепт не в избранном.",
         )
 
     @action(
@@ -76,8 +79,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 request, pk, ShoppingCartSerializer
             )
         return self.delete_user_recipe_relation(
-            request, pk, "shopping_carts", ShoppingCart.DoesNotExist,
-            "Рецепт не в списке покупок (корзине)."
+            request,
+            pk,
+            "shopping_carts",
+            ShoppingCart.DoesNotExist,
+            "Рецепт не в списке покупок (корзине).",
         )
 
     def create_user_recipe_relation(self, request, pk, serializer_class):
@@ -94,8 +100,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_user_recipe_relation(
-        self, request, pk,
-        related_name_for_user, does_not_exist_exception, does_not_exist_message
+        self,
+        request,
+        pk,
+        related_name_for_user,
+        does_not_exist_exception,
+        does_not_exist_message,
     ):
         try:
             getattr(request.user, related_name_for_user).get(
@@ -103,7 +113,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ).delete()
         except does_not_exist_exception:
             return Response(
-                does_not_exist_message, status=status.HTTP_400_BAD_REQUEST,
+                does_not_exist_message,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         return Response(status=status.HTTP_204_NO_CONTENT)

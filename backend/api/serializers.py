@@ -26,9 +26,12 @@ class UserProfileSerializer(UserCreateSerializer):
     def get_is_subscribed(self, obj):
         user = self.context.get("request").user
 
-        if (user.is_authenticated
+        if (
+            user.is_authenticated
             and user.subscriptions_where_subscriber.filter(
-                author=obj.id).exists()):
+                author=obj.id
+            ).exists()
+        ):
             return True
 
         return False  # If we skip this line answer will not be boolean.
