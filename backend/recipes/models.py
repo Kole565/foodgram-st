@@ -40,15 +40,13 @@ class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
         "Recipe",
         on_delete=models.CASCADE,
-        # FIXME: Related name is not descriptive enough and hard to remember.
-        related_name="recipe_ingredientinrecipe",
+        related_name="ingredients_in_recipe",
         verbose_name="Рецепт",
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        # FIXME: Related name is not descriptive enough and hard to remember.
-        related_name="ingredient_ingredientinrecipe",
+        related_name="ingredients_in_recipe",
         verbose_name="Ингредиент",
     )
     amount = models.PositiveSmallIntegerField(

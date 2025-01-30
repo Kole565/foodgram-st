@@ -35,7 +35,7 @@ class ShortIngredientsSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     author = UserProfileSerializer()
     ingredients = IngredientSerializer(
-        source="recipe_ingredientinrecipe", many=True
+        source="ingredients_in_recipe", many=True
     )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
