@@ -2,28 +2,17 @@ from rest_framework import serializers
 
 from api.serializers import UserProfileSerializer
 from recipes.serializers import ShortRecipeSerializer
-from users.models import Subscription, User
+from users.models import Subscription
 
 
-class SubscriptionSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField()
-    recipes = serializers.SerializerMethodField(
-        read_only=True, method_name="get_recipes"
-    )
+class SubscriptionSerializer(UserProfileSerializer):
+    recipes = serializers.SerializerMethodField(method_name="get_recipes")
     recipes_count = serializers.ReadOnlyField(source="recipes.count")
 
-    class Meta:
-        model = User
-        fields = (
-            "email",
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "is_subscribed",
+    class Meta(UserProfileSerializer.Meta):
+        fields = UserProfileSerializer.Meta.fields + (
             "recipes",
             "recipes_count",
-            "avatar",
         )
 
     def get_is_subscribed(self, obj):
