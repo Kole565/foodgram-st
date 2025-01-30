@@ -55,33 +55,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def favorite(self, request, pk):
         if request.method == "POST":
-            return self.create_favorite(request, pk)
-        return self.delete_favorite(request, pk)
-
-    def create_favorite(self, request, pk):
-        serializer = FavoriteSerializer(
-            data={
-                "user": request.user.id,
-                "recipe": pk,
-            }
-        )
-
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def delete_favorite(self, request, pk):
-        try:
-            request.user.favorites.get(
-                user=request.user, recipe_id=pk
-            ).delete()
-        except Favorite.DoesNotExist:
-            return Response(
-                "Рецепт не в избранном.", status=status.HTTP_400_BAD_REQUEST
+            return self.create_user_recipe_relation(
+                request, pk, FavoriteSerializer
             )
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return self.delete_user_recipe_relation(
+            request, pk, "favorites", Favorite.DoesNotExist,
+            "Рецепт не в избранном."
+        )
 
     @action(
         detail=True,
@@ -92,11 +72,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def shopping_cart(self, request, pk):
         if request.method == "POST":
-            return self.create_shopping_cart(request, pk)
-        return self.delete_shopping_cart(request, pk)
+            return self.create_user_recipe_relation(
+                request, pk, ShoppingCartSerializer
+            )
+        return self.delete_user_recipe_relation(
+            request, pk, "shopping_carts", ShoppingCart.DoesNotExist,
+            "Рецепт не в списке покупок (корзине)."
+        )
 
-    def create_shopping_cart(self, request, pk):
-        serializer = ShoppingCartSerializer(
+    def create_user_recipe_relation(self, request, pk, serializer_class):
+        serializer = serializer_class(
             data={
                 "user": request.user.id,
                 "recipe": pk,
@@ -108,15 +93,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def delete_shopping_cart(self, request, pk):
+    def delete_user_recipe_relation(
+        self, request, pk,
+        related_name_for_user, does_not_exist_exception, does_not_exist_message
+    ):
         try:
-            request.user.shopping_carts.get(
+            getattr(request.user, related_name_for_user).get(
                 user=request.user, recipe_id=pk
             ).delete()
-        except ShoppingCart.DoesNotExist:
+        except does_not_exist_exception:
             return Response(
-                "Рецепт не в списке покупок (корзине).",
-                status=status.HTTP_400_BAD_REQUEST,
+                does_not_exist_message, status=status.HTTP_400_BAD_REQUEST,
             )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
