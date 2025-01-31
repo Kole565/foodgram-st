@@ -15,16 +15,6 @@ class SubscriptionSerializer(UserProfileSerializer):
             "recipes_count",
         )
 
-    def get_is_subscribed(self, obj):
-        user = self.context.get("request").user
-
-        if not user.is_authenticated:
-            return False
-
-        return Subscription.objects.filter(
-            subscriber=user, author=obj.id
-        ).exists()
-
     def get_recipes(self, obj):
         request = self.context.get("request")
         recipes = obj.recipes.all()
@@ -32,7 +22,7 @@ class SubscriptionSerializer(UserProfileSerializer):
 
         if recipes_limit:
             try:
-                recipes = recipes[: int(recipes_limit)]
+                recipes = recipes[:int(recipes_limit)]
             except ValueError:
                 pass
 
